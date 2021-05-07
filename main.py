@@ -6,6 +6,7 @@
 # plaxoleg@gmail.com
 
 from requests_html import HTMLSession
+from prometheus_client import start_http_server, Gauge
 import sys
 import time
 import os
@@ -16,6 +17,7 @@ vkapiuri_tag = "VKAPIURI"
 accesstoken_tag = "ACCESSTOKEN"
 version_tag = "VKAPIVERSION"
 
+user_state = Gauge('vk_user_state', 'Description of summary', ['id'])
 
 def check_user(ids):
     TAG = "user checker"
@@ -42,6 +44,7 @@ def check_user(ids):
         userstat = userinfo["last_seen"]
 
         nameofuser = userinfo["first_name"] + " " + userinfo["last_name"]
+        user_id = userinfo["id"]
         ms_time = time.gmtime(int(userstat["time"]) + 10800)
 
         log("online", nameofuser + " " + sex[int(userinfo["online"])][int(userinfo["sex"]) - 1] +
@@ -49,6 +52,9 @@ def check_user(ids):
 
         if int(userinfo["online"]):
             user_online += 1
+            user_state.labels(id=user_id).set(1)
+        else:
+            user_state.labels(id=user_id).set(0)
 
         if len(users) > 1:
             title_mes = str(num_of_user) + " наблюдаемых / " + str(user_online) + " в сети"
@@ -69,7 +75,7 @@ def title_ch(title_string):
 
 def log(tag, message):
     now = time.localtime()
-    log_to_file = open(path + str(now.tm_mday) + ".log", "a")
+    # log_to_file = open(path + str(now.tm_mday) + ".log", "a")
 
     nowtime = time.strftime("%d %b %Y %H:%M:%S", now)
     if str(tag) == "i":
@@ -80,8 +86,8 @@ def log(tag, message):
         text_return = str(nowtime) + ": " + str(tag) + ": " + str(message)
     print(text_return)
 
-    log_to_file.write(text_return + "\n")
-    log_to_file.close()
+    # log_to_file.write(text_return  + "\n")
+    # log_to_file.close()
 
 
 def createConfig(path):
@@ -153,6 +159,7 @@ if __name__ == "__main__":
     if not os.path.exists(path):
         os.makedirs(path)
 
+    start_http_server(8123)
     while True:
         runtimes += 1
         log("br", "")
