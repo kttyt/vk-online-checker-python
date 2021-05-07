@@ -86,6 +86,7 @@ def log(tag, message):
         text_return = str(nowtime) + ": " + str(tag) + ": " + str(message)
     print(text_return)
 
+
     # log_to_file.write(text_return  + "\n")
     # log_to_file.close()
 
