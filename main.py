@@ -63,14 +63,13 @@ def check_user(ids):
                         " " + device[int(userstat["platform"])-1] + ", " + time.strftime("%H:%M:%S", ms_time)
     log("br", "")
 
-    title_ch(title_mes)
+    log(TAG, title_mes)
 
     log(TAG, "Задержка " + str(countMillis) + " мс.")
 
 
-def title_ch(title_string):
-    from os import system
-    system("title " + title_string)
+# def title_ch(title_string):
+#     print("title " + title_string)
 
 
 def log(tag, message):

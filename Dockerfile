@@ -6,4 +6,4 @@ RUN pip install --no-cache-dir prometheus_client requests-html
 
 COPY . .
 
-ENTRYPOINT [ "python", "./main.py" ]
+ENTRYPOINT [ "python", "-u", "./main.py" ]
