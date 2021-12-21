@@ -10,11 +10,6 @@ jobs:
       IMAGE_NAME: kttytk/vk-online-checker
     steps:
       - uses: actions/checkout@master
-      - name: Bump version and push tag
-        uses: hennejg/github-tag-action@v4.3.1
-        id: bump_version
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -30,13 +25,4 @@ jobs:
         with:
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: ${{ env.IMAGE_NAME }}:latest, ${{ env.IMAGE_NAME }}:${{ steps.bump_version.outputs.new_tag }}
-      # - name: promote in argocd
-      #   uses: benc-uk/workflow-dispatch@v1
-      #   with:
-      #     workflow: promote app
-      #     repo: kttyt/k8s-personal-argocd
-      #     token: ${{ secrets.WORKFLOW_TOKEN }}
-      #     inputs: >-
-      #       { "app_name": "${{ env.IMAGE_NAME }}", "app_tag": "${{ steps.bump_version.outputs.new_tag }}" }
- 
+          tags: ${{ env.IMAGE_NAME }}:latest
